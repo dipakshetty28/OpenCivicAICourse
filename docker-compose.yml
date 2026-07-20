@@ -1,0 +1,10 @@
+services:
+  course:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_APP_NAME: OpenCivic AI Course
+    ports:
+      - "3000:3000"
