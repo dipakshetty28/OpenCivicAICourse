@@ -23,3 +23,12 @@ Implemented the course information architecture and visual system.
 - Pulling latest `main` could not be completed because this repository has no `origin` remote configured in the environment.
 - Storybook was intentionally not added because it would complicate the stack for this chunk.
 - Cognito, DynamoDB, Terraform, GitHub Actions, CloudWatch, and full lesson generation remain intentionally out of scope.
+
+## 2026-07-20 — Route slug fix
+
+Fixed a Next.js dynamic route conflict caused by mixed segment names for the same course route level. The module route directory now consistently uses `[slug]`, and the nested lesson route uses `[lessonSlug]`. Removed stale `.next` cache so old `[module]`/`[lesson]` metadata cannot conflict with the current route tree.
+
+### Validation status
+
+- Formatting was run after the route rename.
+- Dependency-backed checks remain blocked until npm package installation is available in this environment.

@@ -1,32 +1,38 @@
-import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LessonView } from "../../../components/course/LessonView";
-import { getAllLessons, getLessonBySlug } from "../../../lib/course/catalog";
+import { LessonCard } from "../../../components/course/LessonCard";
+import { AppShell } from "../../../components/layout/AppShell";
+import { Breadcrumb } from "../../../components/layout/Breadcrumb";
+import { getModule, getModules } from "../../../lib/course/data";
 
-type LessonPageProps = {
+type ModulePageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
-  return getAllLessons().map((lesson) => ({ slug: lesson.slug }));
+  return getModules().map((courseModule) => ({ slug: courseModule.slug }));
 }
 
-export async function generateMetadata({ params }: LessonPageProps): Promise<Metadata> {
+export default async function ModulePage({ params }: ModulePageProps) {
   const { slug } = await params;
-  const lesson = getLessonBySlug(slug);
+  const courseModule = getModule(slug);
 
-  return {
-    title: lesson ? `${lesson.title} | OpenCivic AI Course` : "Lesson not found"
-  };
-}
-
-export default async function LessonPage({ params }: LessonPageProps) {
-  const { slug } = await params;
-  const lesson = getLessonBySlug(slug);
-
-  if (!lesson) {
+  if (!courseModule) {
     notFound();
   }
 
-  return <LessonView lesson={lesson} />;
+  return (
+    <AppShell>
+      <Breadcrumb items={[{ href: "/course", label: "Course" }, { label: courseModule.title }]} />
+      <header className="page-header">
+        <p className="eyebrow">Module {courseModule.order}</p>
+        <h1>{courseModule.title}</h1>
+        <p>{courseModule.summary}</p>
+      </header>
+      <div className="lesson-list">
+        {courseModule.lessons.map((lesson) => (
+          <LessonCard key={lesson.slug} courseModule={courseModule} lesson={lesson} />
+        ))}
+      </div>
+    </AppShell>
+  );
 }
